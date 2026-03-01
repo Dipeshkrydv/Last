@@ -54,7 +54,7 @@ export async function GET(req) {
             where: whereClause,
             include: [{
                 model: User,
-                attributes: ['name', 'email', 'city', 'province'],
+                attributes: ['name', 'city', 'province'],
                 where: sequelize.where(sequelize.literal(haversine), '<=', distance),
                 required: true // Ensures we only get books from users within the radius
             }]
@@ -67,7 +67,7 @@ export async function GET(req) {
             where: whereClause,
             include: [{
                 model: User,
-                attributes: ['name', 'email', 'city', 'province']
+                attributes: ['name', 'city', 'province']
             }]
         });
         return NextResponse.json(books);
