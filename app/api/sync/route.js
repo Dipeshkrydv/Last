@@ -3,7 +3,7 @@ import sequelize from '@/lib/db';
 import '@/models/index'; // Ensure models are loaded
 
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
 export async function GET() {
   try {

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { Order, Book, Message, User, AutomationLog } from '@/models/index';
-import { authOptions } from '../../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { sendEmail } from '@/lib/email';
 
 export async function POST(req, { params }) {
