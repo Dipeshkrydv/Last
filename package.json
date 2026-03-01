@@ -1,22 +1,39 @@
 {
-  "name": "next-production-app",
+  "name": "pustaklinu",
+  "version": "1.0.0",
   "private": true,
+  "description": "Buy and sell old books nearby",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "firebase": "^10.7.0",
+    "lucide-react": "^0.323.0",
+    "mysql2": "^3.18.2",
     "next": "14.1.0",
+    "next-auth": "^4.24.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "next-auth": "^4.24.5",
-    "lucide-react": "^0.323.0"
+    "react-hot-toast": "^2.4.1",
+    "react-toastify": "^11.0.5",
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.17",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.1.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
