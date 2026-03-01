@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import Modal from '@/components/Modal';
 import BookForm from '@/components/BookForm';
 
+import { getBookImage } from "@/lib/utils";
 export default function SellerDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -99,20 +100,6 @@ export default function SellerDashboard() {
     }
   };
 
-  const getBookImage = (book) => {
-    let imgs = book.images;
-    if (typeof imgs === 'string') {
-      try {
-        imgs = JSON.parse(imgs);
-      } catch (e) {
-        if (imgs.startsWith('/') || imgs.startsWith('http')) {
-          return imgs;
-        }
-        imgs = [];
-      }
-    }
-    return Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : '/placeholder-book.png';
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 font-sans">

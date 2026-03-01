@@ -9,6 +9,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Testimonials from '@/components/Testimonials';
 import DonationFooter from '@/components/DonationFooter';
+import { getBookImage } from "@/lib/utils";
 
 export default function BuyerDashboard() {
   const { data: session } = useSession();
@@ -174,20 +175,6 @@ export default function BuyerDashboard() {
     }
   };
 
-  const getBookImage = (book) => {
-    let imgs = book.images;
-    if (typeof imgs === 'string') {
-      try {
-        imgs = JSON.parse(imgs);
-      } catch (e) {
-        if (imgs.startsWith('/') || imgs.startsWith('http')) {
-          return imgs;
-        }
-        imgs = [];
-      }
-    }
-    return Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : '/placeholder-book.png';
-  };
 
   const calculateDiscountedPrice = (price, discount) => {
     if (!discount || discount <= 0) return price;
