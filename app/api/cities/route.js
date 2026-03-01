@@ -1,6 +1,7 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
-import models from '@/models/index';
-const { User } = models;
+import { User, Book, Order, Cart, Message } from '@/models/index';
+
 
 export async function GET() {
   try {

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import models from '@/models/index';
-const { Feedback, User } = models;
-import { authOptions } from '../auth/[...nextauth]/route';
+import { User, Book, Order, Cart, Message } from '@/models/index';
+
+import { authOptions } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
