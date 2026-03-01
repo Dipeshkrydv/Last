@@ -10,7 +10,8 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "test": "jest"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -29,6 +30,7 @@
     "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",
+    "jest": "^30.2.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1"
   },
