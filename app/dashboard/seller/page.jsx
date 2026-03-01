@@ -8,6 +8,7 @@ import { Plus, Edit, Trash2, Eye, Loader2, BookOpen, AlertTriangle } from 'lucid
 import { toast } from 'react-toastify';
 import Modal from '@/components/Modal';
 import BookForm from '@/components/BookForm';
+import { getBookImage } from '@/lib/utils';
 
 export default function SellerDashboard() {
   const { data: session, status } = useSession();
@@ -97,21 +98,6 @@ export default function SellerDashboard() {
     } catch (error) {
       toast.update(toastId, { render: "Error deleting book", type: "error", isLoading: false, autoClose: 3000 });
     }
-  };
-
-  const getBookImage = (book) => {
-    let imgs = book.images;
-    if (typeof imgs === 'string') {
-      try {
-        imgs = JSON.parse(imgs);
-      } catch (e) {
-        if (imgs.startsWith('/') || imgs.startsWith('http')) {
-          return imgs;
-        }
-        imgs = [];
-      }
-    }
-    return Array.isArray(imgs) && imgs.length > 0 ? imgs[0] : '/placeholder-book.png';
   };
 
   return (
