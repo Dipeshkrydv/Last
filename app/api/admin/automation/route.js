@@ -39,11 +39,11 @@ export async function POST(req) {
         // REAL RETRY LOGIC
         if (log.type === 'EMAIL') {
             const { subject, body } = log.payload;
-            const sent = await sendEmail(log.target, subject, body);
+            const sent = await sendEmail({ to: log.target, subject, text: body });
 
-            log.status = sent ? 'SUCCESS' : 'FAILED';
+            log.status = sent.success ? 'SUCCESS' : 'FAILED';
             log.retryCount += 1;
-            log.error = sent ? null : 'Retry failed. Check .env.';
+            log.error = sent.success ? null : 'Retry failed. Check .env.';
             await log.save();
         } else {
             // For now only EMAIL is supported

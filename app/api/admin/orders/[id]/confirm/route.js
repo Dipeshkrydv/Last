@@ -122,36 +122,36 @@ Please contact the buyer to complete the handover.
             // 3. Automate Email Logs (Real Sending)
 
             // Notify Buyer via Email
-            const buyerEmailSent = await sendEmail(
-                buyer.email,
-                `Order #${order.id} Confirmed - Pustaklinu`,
-                sellerInfoForBuyerText,
-                sellerInfoForBuyerHTML
-            );
+            const buyerEmailSent = await sendEmail({
+                to: buyer.email,
+                subject: `Order #${order.id} Confirmed - Pustaklinu`,
+                text: sellerInfoForBuyerText,
+                html: sellerInfoForBuyerHTML
+            });
 
             await AutomationLog.create({
                 type: 'EMAIL',
                 target: buyer.email,
-                status: buyerEmailSent ? 'SUCCESS' : 'FAILED',
+                status: buyerEmailSent.success ? 'SUCCESS' : 'FAILED',
                 payload: { subject: `Order #${order.id} Confirmed`, body: sellerInfoForBuyerText },
                 retryCount: 0,
-                error: buyerEmailSent ? null : 'Failed to send email. Check .env for GMAIL_PASS.'
+                error: buyerEmailSent.success ? null : 'Failed to send email. Check .env for GMAIL_PASS.'
             });
 
             // Notify Seller via Email
-            const sellerEmailSent = await sendEmail(
-                seller.email,
-                `Book Sold: ${order.book.title} - Pustaklinu`,
-                buyerInfoForSeller
-            );
+            const sellerEmailSent = await sendEmail({
+                to: seller.email,
+                subject: `Book Sold: ${order.book.title} - Pustaklinu`,
+                text: buyerInfoForSeller
+            });
 
             await AutomationLog.create({
                 type: 'EMAIL',
                 target: seller.email,
-                status: sellerEmailSent ? 'SUCCESS' : 'FAILED',
+                status: sellerEmailSent.success ? 'SUCCESS' : 'FAILED',
                 payload: { subject: `Book Sold: ${order.book.title}`, body: buyerInfoForSeller },
                 retryCount: 0,
-                error: sellerEmailSent ? null : 'Failed to send email. Check .env for GMAIL_PASS.'
+                error: sellerEmailSent.success ? null : 'Failed to send email. Check .env for GMAIL_PASS.'
             });
         }
 

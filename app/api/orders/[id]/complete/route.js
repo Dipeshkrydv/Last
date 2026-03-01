@@ -62,16 +62,20 @@ Payment Methods: eSewa, Khalti, Bank Transfer.
         `.trim();
 
         // Send Email
-        const buyerEmailSent = await sendEmail(buyer.email, `Order Complete: ${fullOrder.book?.title}`, buyerMsg);
+        const buyerEmailSent = await sendEmail({
+            to: buyer.email,
+            subject: `Order Complete: ${fullOrder.book?.title}`,
+            text: buyerMsg
+        });
 
         // Log & Message
         await Message.create({ senderId: 1, receiverId: buyer.id, content: buyerMsg });
         await AutomationLog.create({
             type: 'EMAIL',
             target: buyer.email,
-            status: buyerEmailSent ? 'SUCCESS' : 'FAILED',
+            status: buyerEmailSent.success ? 'SUCCESS' : 'FAILED',
             payload: { subject: `Order Complete`, body: buyerMsg },
-            error: buyerEmailSent ? null : 'Failed to send complete email.'
+            error: buyerEmailSent.success ? null : 'Failed to send complete email.'
         });
 
         // 2. Notify Seller
@@ -85,15 +89,19 @@ Please pay your 5% Platform Fee if applicable.
 Thank you for using Pustaklinu!
             `.trim();
 
-            const sellerEmailSent = await sendEmail(seller.email, `Book Delivered: ${fullOrder.book?.title}`, sellerMsg);
+            const sellerEmailSent = await sendEmail({
+                to: seller.email,
+                subject: `Book Delivered: ${fullOrder.book?.title}`,
+                text: sellerMsg
+            });
 
             await Message.create({ senderId: 1, receiverId: seller.id, content: sellerMsg });
             await AutomationLog.create({
                 type: 'EMAIL',
                 target: seller.email,
-                status: sellerEmailSent ? 'SUCCESS' : 'FAILED',
+                status: sellerEmailSent.success ? 'SUCCESS' : 'FAILED',
                 payload: { subject: `Book Delivered`, body: sellerMsg },
-                error: sellerEmailSent ? null : 'Failed to send complete email.'
+                error: sellerEmailSent.success ? null : 'Failed to send complete email.'
             });
         }
 
