@@ -27,7 +27,7 @@ export default function Testimonials() {
                 </div>
               </div>
             </div>
-            <p className="text-gray-600 italic">"{review.text}"</p>
+            <p className="text-gray-600 italic">&quot;{review.text}&quot;</p>
           </div>
         ))}
       </div>
