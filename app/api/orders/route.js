@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 import { getServerSession } from 'next-auth';
-import models from '@/models/index';
-const { Order, Book, User } = models;
+import { User, Book, Order, Cart, Message } from '@/models/index';
 import { authOptions } from '@/lib/auth';
 
 export async function GET(req) {

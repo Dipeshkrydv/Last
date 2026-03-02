@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { User, Book, Order, Cart, Message } from '@/models/index'; // Import related models for cascade delete if not handled by DB

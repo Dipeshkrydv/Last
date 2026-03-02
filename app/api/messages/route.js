@@ -1,8 +1,9 @@
+export const dynamic = "force-dynamic";
 
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import models from '@/models/index';
-const { Message, User } = models;
+import { User, Book, Order, Cart, Message } from '@/models/index';
+
 import { Op } from 'sequelize';
 import { authOptions } from '@/lib/auth';
 

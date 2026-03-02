@@ -1,11 +1,12 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { Op } from 'sequelize';
 import sequelize from '@/lib/db';
-import models from '@/models/index';
-const { Book, User } = models;
+import { User, Book, Order, Cart, Message } from '@/models/index';
+
 import { authOptions } from '@/lib/auth';
 
 export async function GET(req) {
