@@ -9,8 +9,6 @@ import { toast } from 'react-toastify';
 import Modal from '@/components/Modal';
 import BookForm from '@/components/BookForm';
 import { getBookImage } from '@/lib/utils';
-
-import { getBookImage } from "@/lib/utils";
 export default function SellerDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
