@@ -19,11 +19,23 @@ export async function POST(req) {
     }
 
     await sequelize.transaction(async (t) => {
-      for (const item of cartItems) {
-        // Frontend sends item.id as the book ID (from book.id)
-        const bookId = item.id || item.bookId;
+      const bookIds = cartItems.map(item => item.id || item.bookId);
 
-        const book = await Book.findByPk(bookId, { transaction: t });
+      // Fetch all books in a single query
+      const books = await Book.findAll({
+        where: { id: bookIds },
+        transaction: t,
+      });
+
+      // Map books for quick lookup and validation
+      const bookMap = new Map();
+      books.forEach((b) => bookMap.set(b.id, b));
+
+      const ordersData = [];
+
+      for (const item of cartItems) {
+        const bookId = item.id || item.bookId;
+        const book = bookMap.get(bookId);
 
         if (!book) {
           throw new Error(`Book with ID ${bookId} not found.`);
@@ -33,17 +45,25 @@ export async function POST(req) {
           throw new Error(`Book "${book.title}" is no longer available.`);
         }
 
-        // Create the order
-        await Order.create({
+        // Mark book as on-hold immediately in memory to prevent duplicate cart items
+        book.status = 'on-hold';
+
+        ordersData.push({
           buyerId: session.user.id,
           bookId: book.id,
           status: 'pending',
           totalAmount: book.price, // Trust DB price
-        }, { transaction: t });
-
-        // Mark book as on-hold immediately
-        await book.update({ status: 'on-hold' }, { transaction: t });
+        });
       }
+
+      // Create all orders at once
+      await Order.bulkCreate(ordersData, { transaction: t });
+
+      // Update all book statuses at once
+      await Book.update(
+        { status: 'on-hold' },
+        { where: { id: bookIds }, transaction: t }
+      );
     });
 
     return NextResponse.json({ message: 'Order placed successfully' });
