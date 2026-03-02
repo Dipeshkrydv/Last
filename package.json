@@ -27,11 +27,15 @@
     "sequelize": "^6.37.7"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "autoprefixer": "^10.4.17",
+    "babel-jest": "^30.2.0",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",
+    "jest": "^30.2.0",
     "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2"
   },
   "engines": {
     "node": ">=18.0.0",
