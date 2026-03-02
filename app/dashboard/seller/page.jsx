@@ -8,6 +8,7 @@ import { Plus, Edit, Trash2, Eye, Loader2, BookOpen, AlertTriangle } from 'lucid
 import { toast } from 'react-toastify';
 import Modal from '@/components/Modal';
 import BookForm from '@/components/BookForm';
+import { getBookImage } from '@/lib/utils';
 
 import { getBookImage } from "@/lib/utils";
 export default function SellerDashboard() {
