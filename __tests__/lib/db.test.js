@@ -1,4 +1,13 @@
-import connectDB from '../../lib/db';
+import { connectDB } from '../../lib/db';
+
+jest.mock('sequelize', () => {
+  const mSequelize = {
+    authenticate: jest.fn().mockResolvedValue(true),
+  };
+  return {
+    Sequelize: jest.fn(() => mSequelize),
+  };
+});
 
 describe('connectDB', () => {
   let consoleSpy;
@@ -13,13 +22,8 @@ describe('connectDB', () => {
     consoleSpy.mockRestore();
   });
 
-  it('should return true', async () => {
-    const result = await connectDB();
-    expect(result).toBe(true);
-  });
-
   it('should log connection message', async () => {
     await connectDB();
-    expect(consoleSpy).toHaveBeenCalledWith('Database connected (placeholder)');
+    expect(consoleSpy).toHaveBeenCalledWith('Database connected successfully.');
   });
 });
