@@ -45,14 +45,15 @@ export async function GET(req) {
         // Haversine formula in Sequelize
         const haversine = `(
             6371 * acos(
-                cos(radians(${latitude})) * cos(radians(latitude)) *
-                cos(radians(longitude) - radians(${longitude})) +
-                sin(radians(${latitude})) * sin(radians(latitude))
+                cos(radians(:latitude)) * cos(radians(latitude)) *
+                cos(radians(longitude) - radians(:longitude)) +
+                sin(radians(:latitude)) * sin(radians(latitude))
             )
         )`;
 
         const books = await Book.findAll({
             where: whereClause,
+            replacements: { latitude, longitude },
             include: [{
                 model: User,
                 attributes: ['name', 'city', 'province'],
