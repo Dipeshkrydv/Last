@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from '@/lib/auth';
 import SessionProvider from "./SessionProvider";
 import Providers from './providers';
 import ToastProvider from '../components/ToastProvider';
