@@ -1,4 +1,4 @@
-import connectDB from '../../lib/db';
+import { default as sequelize } from '../../lib/db';
 
 describe('connectDB', () => {
   let consoleSpy;
@@ -13,13 +13,11 @@ describe('connectDB', () => {
     consoleSpy.mockRestore();
   });
 
-  it('should return true', async () => {
-    const result = await connectDB();
-    expect(result).toBe(true);
+  it('should be defined', () => {
+    expect(sequelize).toBeDefined();
   });
 
-  it('should log connection message', async () => {
-    await connectDB();
-    expect(consoleSpy).toHaveBeenCalledWith('Database connected (placeholder)');
+  it('should have authenticate method', () => {
+    expect(typeof sequelize.authenticate).toBe('function');
   });
 });
