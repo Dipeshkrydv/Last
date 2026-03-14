@@ -1,4 +1,17 @@
-import connectDB from '../../lib/db';
+import { connectDB } from '../../lib/db';
+
+// Mock Sequelize globally before importing it to prevent real connection attempt
+jest.mock('sequelize', () => {
+  const mSequelize = {
+    authenticate: jest.fn().mockResolvedValue(),
+  };
+  return {
+    Sequelize: jest.fn(() => mSequelize),
+  };
+});
+
+// Mock mysql2
+jest.mock('mysql2', () => ({}));
 
 describe('connectDB', () => {
   let consoleSpy;
@@ -13,13 +26,13 @@ describe('connectDB', () => {
     consoleSpy.mockRestore();
   });
 
-  it('should return true', async () => {
+  it('should not return anything since it logs the connection message', async () => {
     const result = await connectDB();
-    expect(result).toBe(true);
+    expect(result).toBeUndefined();
   });
 
   it('should log connection message', async () => {
     await connectDB();
-    expect(consoleSpy).toHaveBeenCalledWith('Database connected (placeholder)');
+    expect(consoleSpy).toHaveBeenCalledWith('Database connected successfully.');
   });
 });
