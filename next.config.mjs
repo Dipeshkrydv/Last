@@ -4,6 +4,9 @@ const nextConfig = {
   swcMinify: true,
   compress: true,
   productionBrowserSourceMaps: false,
+  experimental: {
+    serverComponentsExternalPackages: ['sequelize'],
+  },
   poweredByHeader: false,
   optimizeFonts: true,
   images: {
