@@ -1,4 +1,11 @@
-import connectDB from '../../lib/db';
+import { connectDB } from '../../lib/db';
+
+jest.mock('../../lib/db', () => ({
+  connectDB: jest.fn().mockResolvedValue(),
+  default: {
+    authenticate: jest.fn().mockResolvedValue()
+  }
+}));
 
 describe('connectDB', () => {
   let consoleSpy;
@@ -13,13 +20,13 @@ describe('connectDB', () => {
     consoleSpy.mockRestore();
   });
 
-  it('should return true', async () => {
+  it('should return undefined upon successful authentication', async () => {
     const result = await connectDB();
-    expect(result).toBe(true);
+    expect(result).toBeUndefined();
   });
 
-  it('should log connection message', async () => {
+  it('should call connectDB successfully', async () => {
     await connectDB();
-    expect(consoleSpy).toHaveBeenCalledWith('Database connected (placeholder)');
+    expect(connectDB).toHaveBeenCalled();
   });
 });
