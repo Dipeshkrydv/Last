@@ -43,7 +43,7 @@ export async function POST(req) {
 
         const sent = await sendEmail({ to: email, subject, text, html });
 
-        if (sent.success) {
+        if (sent && sent.success) {
             return NextResponse.json({ message: 'OTP sent successfully' });
         } else {
             return NextResponse.json({ error: 'Failed to send email. Please check server configuration.' }, { status: 500 });
