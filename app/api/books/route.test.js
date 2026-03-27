@@ -1,38 +1,38 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GET } from './route';
-import { Op } from 'sequelize';
 
 // Mock Next.js and next-auth
-vi.mock('next/server', () => ({
+jest.mock('next/server', () => ({
   NextResponse: {
-    json: vi.fn((data, init) => ({ data, init })),
+    json: jest.fn((data, init) => ({ data, init })),
   },
 }));
 
-vi.mock('next-auth', () => ({
-  getServerSession: vi.fn(),
+jest.mock('next-auth', () => ({
+  getServerSession: jest.fn(),
 }));
 
 // Mock the database models
-const mockFindAll = vi.fn();
-vi.mock('@/models/index', () => ({
-  default: {
-    Book: {
-      findAll: (...args) => mockFindAll(...args),
-    },
-    User: {},
+const mockFindAll = jest.fn();
+jest.mock('@/models/index', () => ({
+  __esModule: true,
+  Book: {
+    findAll: (...args) => mockFindAll(...args),
   },
+  User: {},
 }));
 
 // Mock Sequelize instance and Op
-vi.mock('@/lib/db', () => ({
+jest.mock('@/lib/db', () => ({
   default: {
-    where: vi.fn(),
-    literal: vi.fn(),
+    where: jest.fn(),
+    literal: jest.fn(),
   },
 }));
 
-vi.mock('sequelize', () => ({
+const mockOpOr = Symbol.for('or');
+const mockOpLike = Symbol.for('like');
+
+jest.mock('sequelize', () => ({
   Op: {
     or: Symbol.for('or'),
     like: Symbol.for('like'),
@@ -40,14 +40,16 @@ vi.mock('sequelize', () => ({
 }));
 
 // Mock authOptions to prevent circular dependency issues
-vi.mock('@/lib/auth', () => ({
+jest.mock('@/lib/auth', () => ({
   authOptions: {},
 }));
 
 describe('GET /api/books Search Algorithm', () => {
+  let Op;
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockFindAll.mockResolvedValue([{ id: 1, title: 'Test Book' }]);
+    Op = require('sequelize').Op;
   });
 
   it('should call Book.findAll with empty where clause if no query is provided', async () => {
