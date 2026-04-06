@@ -8,11 +8,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
+    "test": "jest --config jest.config.js",
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "analyze": "ANALYZE=true next build",
-    "test": "node --test"
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
