@@ -1,52 +1,47 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GET } from './route';
 import { Op } from 'sequelize';
 
 // Mock Next.js and next-auth
-vi.mock('next/server', () => ({
+jest.mock('next/server', () => ({
   NextResponse: {
-    json: vi.fn((data, init) => ({ data, init })),
+    json: jest.fn((data, init) => ({ data, init })),
   },
 }));
 
-vi.mock('next-auth', () => ({
-  getServerSession: vi.fn(),
+jest.mock('next-auth', () => ({
+  getServerSession: jest.fn(),
 }));
 
 // Mock the database models
-const mockFindAll = vi.fn();
-vi.mock('@/models/index', () => ({
-  default: {
-    Book: {
-      findAll: (...args) => mockFindAll(...args),
-    },
-    User: {},
+const mockFindAll = jest.fn();
+jest.mock('@/models/index', () => ({
+  __esModule: true,
+  Book: {
+    findAll: (...args) => mockFindAll(...args),
   },
+  User: {},
 }));
 
 // Mock Sequelize instance and Op
-vi.mock('@/lib/db', () => ({
+jest.mock('@/lib/db', () => ({
+  __esModule: true,
   default: {
-    where: vi.fn(),
-    literal: vi.fn(),
+    where: jest.fn(),
+    literal: jest.fn(),
   },
 }));
 
-vi.mock('sequelize', () => ({
-  Op: {
-    or: Symbol.for('or'),
-    like: Symbol.for('like'),
-  },
-}));
+// Keep the actual sequelize Op implementation for the test to pass
+// We don't need to mock it if we're just comparing objects
 
 // Mock authOptions to prevent circular dependency issues
-vi.mock('@/lib/auth', () => ({
+jest.mock('@/lib/auth', () => ({
   authOptions: {},
 }));
 
 describe('GET /api/books Search Algorithm', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockFindAll.mockResolvedValue([{ id: 1, title: 'Test Book' }]);
   });
 
