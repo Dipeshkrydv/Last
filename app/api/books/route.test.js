@@ -1,38 +1,36 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GET } from './route';
 import { Op } from 'sequelize';
+import { Book } from '@/models/index';
 
 // Mock Next.js and next-auth
-vi.mock('next/server', () => ({
+jest.mock('next/server', () => ({
   NextResponse: {
-    json: vi.fn((data, init) => ({ data, init })),
+    json: jest.fn((data, init) => ({ data, init })),
   },
 }));
 
-vi.mock('next-auth', () => ({
-  getServerSession: vi.fn(),
+jest.mock('next-auth', () => ({
+  getServerSession: jest.fn(),
 }));
 
 // Mock the database models
-const mockFindAll = vi.fn();
-vi.mock('@/models/index', () => ({
-  default: {
-    Book: {
-      findAll: (...args) => mockFindAll(...args),
-    },
-    User: {},
+jest.mock('@/models/index', () => ({
+  __esModule: true,
+  Book: {
+    findAll: jest.fn(),
   },
+  User: {},
 }));
 
 // Mock Sequelize instance and Op
-vi.mock('@/lib/db', () => ({
+jest.mock('@/lib/db', () => ({
   default: {
-    where: vi.fn(),
-    literal: vi.fn(),
+    where: jest.fn(),
+    literal: jest.fn(),
   },
 }));
 
-vi.mock('sequelize', () => ({
+jest.mock('sequelize', () => ({
   Op: {
     or: Symbol.for('or'),
     like: Symbol.for('like'),
@@ -40,22 +38,22 @@ vi.mock('sequelize', () => ({
 }));
 
 // Mock authOptions to prevent circular dependency issues
-vi.mock('@/lib/auth', () => ({
+jest.mock('@/lib/auth', () => ({
   authOptions: {},
 }));
 
 describe('GET /api/books Search Algorithm', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-    mockFindAll.mockResolvedValue([{ id: 1, title: 'Test Book' }]);
+    jest.clearAllMocks();
+    Book.findAll.mockResolvedValue([{ id: 1, title: 'Test Book' }]);
   });
 
   it('should call Book.findAll with empty where clause if no query is provided', async () => {
     const req = { url: 'http://localhost/api/books' };
     await GET(req);
 
-    expect(mockFindAll).toHaveBeenCalledTimes(1);
-    const callArgs = mockFindAll.mock.calls[0][0];
+    expect(Book.findAll).toHaveBeenCalledTimes(1);
+    const callArgs = Book.findAll.mock.calls[0][0];
     expect(callArgs.where).toEqual({});
   });
 
@@ -63,8 +61,8 @@ describe('GET /api/books Search Algorithm', () => {
     const req = { url: 'http://localhost/api/books?q=javascript' };
     await GET(req);
 
-    expect(mockFindAll).toHaveBeenCalledTimes(1);
-    const callArgs = mockFindAll.mock.calls[0][0];
+    expect(Book.findAll).toHaveBeenCalledTimes(1);
+    const callArgs = Book.findAll.mock.calls[0][0];
 
     expect(callArgs.where[Op.or]).toBeDefined();
     expect(callArgs.where[Op.or]).toEqual([
@@ -77,8 +75,8 @@ describe('GET /api/books Search Algorithm', () => {
     const req = { url: 'http://localhost/api/books?q=react+native+guide' };
     await GET(req);
 
-    expect(mockFindAll).toHaveBeenCalledTimes(1);
-    const callArgs = mockFindAll.mock.calls[0][0];
+    expect(Book.findAll).toHaveBeenCalledTimes(1);
+    const callArgs = Book.findAll.mock.calls[0][0];
 
     expect(callArgs.where[Op.or]).toBeDefined();
     expect(callArgs.where[Op.or]).toEqual([
@@ -92,8 +90,8 @@ describe('GET /api/books Search Algorithm', () => {
     const req = { url: 'http://localhost/api/books?q=  hello   world  ' };
     await GET(req);
 
-    expect(mockFindAll).toHaveBeenCalledTimes(1);
-    const callArgs = mockFindAll.mock.calls[0][0];
+    expect(Book.findAll).toHaveBeenCalledTimes(1);
+    const callArgs = Book.findAll.mock.calls[0][0];
 
     expect(callArgs.where[Op.or]).toEqual([
       { title: { [Op.like]: '%  hello   world%' } },
@@ -105,8 +103,8 @@ describe('GET /api/books Search Algorithm', () => {
     const req = { url: 'http://localhost/api/books?q=test&category=programming' };
     await GET(req);
 
-    expect(mockFindAll).toHaveBeenCalledTimes(1);
-    const callArgs = mockFindAll.mock.calls[0][0];
+    expect(Book.findAll).toHaveBeenCalledTimes(1);
+    const callArgs = Book.findAll.mock.calls[0][0];
 
     expect(callArgs.where.category).toBe('programming');
     expect(callArgs.where[Op.or]).toEqual([
