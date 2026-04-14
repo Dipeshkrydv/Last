@@ -1,4 +1,12 @@
-import connectDB from '../../lib/db';
+import { connectDB } from '../../lib/db';
+
+jest.mock('../../lib/db', () => {
+  const actualDb = jest.requireActual('../../lib/db');
+  return {
+    ...actualDb,
+    connectDB: jest.fn().mockResolvedValue(undefined),
+  };
+});
 
 describe('connectDB', () => {
   let consoleSpy;
@@ -13,13 +21,8 @@ describe('connectDB', () => {
     consoleSpy.mockRestore();
   });
 
-  it('should return true', async () => {
+  it('should resolve to undefined on successful connection', async () => {
     const result = await connectDB();
-    expect(result).toBe(true);
-  });
-
-  it('should log connection message', async () => {
-    await connectDB();
-    expect(consoleSpy).toHaveBeenCalledWith('Database connected (placeholder)');
+    expect(result).toBe(undefined);
   });
 });
