@@ -62,7 +62,8 @@ describe('POST /api/auth/otp/send', () => {
     Otp.findOne.mockResolvedValue(null);
     Otp.create.mockResolvedValue(true);
     crypto.randomInt.mockReturnValue(123456);
-    sendEmail.mockResolvedValue(true);
+    sendEmail.mockResolvedValue({ success: true });
+    sendEmail.mockResolvedValue({ success: true });
 
     const response = await POST(req);
     const responseData = await response.json();
@@ -74,12 +75,12 @@ describe('POST /api/auth/otp/send', () => {
       email: 'new@example.com',
       otp: '123456',
     }));
-    expect(sendEmail).toHaveBeenCalledWith(
-      'new@example.com',
-      'Your Verification Code - Pustaklinu',
-      expect.stringContaining('123456'),
-      expect.stringContaining('123456')
-    );
+    expect(sendEmail).toHaveBeenCalledWith(expect.objectContaining({
+      to: 'new@example.com',
+      subject: 'Your Verification Code - Pustaklinu',
+      text: expect.stringContaining('123456'),
+      html: expect.stringContaining('123456')
+    }));
     expect(response.status).toBe(200);
     expect(responseData.message).toBe('OTP sent successfully');
   });
@@ -94,7 +95,7 @@ describe('POST /api/auth/otp/send', () => {
     User.findOne.mockResolvedValue(null);
     Otp.findOne.mockResolvedValue({ update: mockOtpUpdate });
     crypto.randomInt.mockReturnValue(654321);
-    sendEmail.mockResolvedValue(true);
+    sendEmail.mockResolvedValue({ success: true });
 
     const response = await POST(req);
     const responseData = await response.json();
@@ -105,12 +106,12 @@ describe('POST /api/auth/otp/send', () => {
     expect(mockOtpUpdate).toHaveBeenCalledWith(expect.objectContaining({
       otp: '654321',
     }));
-    expect(sendEmail).toHaveBeenCalledWith(
-      'existingotp@example.com',
-      'Your Verification Code - Pustaklinu',
-      expect.stringContaining('654321'),
-      expect.stringContaining('654321')
-    );
+    expect(sendEmail).toHaveBeenCalledWith(expect.objectContaining({
+      to: 'existingotp@example.com',
+      subject: 'Your Verification Code - Pustaklinu',
+      text: expect.stringContaining('654321'),
+      html: expect.stringContaining('654321')
+    }));
     expect(response.status).toBe(200);
     expect(responseData.message).toBe('OTP sent successfully');
   });
@@ -124,7 +125,7 @@ describe('POST /api/auth/otp/send', () => {
     Otp.findOne.mockResolvedValue(null);
     Otp.create.mockResolvedValue(true);
     crypto.randomInt.mockReturnValue(111111);
-    sendEmail.mockResolvedValue(false);
+    sendEmail.mockResolvedValue({ success: false });
 
     const response = await POST(req);
     const responseData = await response.json();
