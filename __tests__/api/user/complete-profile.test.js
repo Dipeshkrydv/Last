@@ -219,10 +219,14 @@ describe('POST /api/user/complete-profile', () => {
     const { User } = require('@/models/index');
     User.findOne.mockRejectedValue(new Error('Database explosion')); // Generic error
 
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
     const response = await POST(mockReq);
     const data = await response.json();
 
     expect(response.status).toBe(500);
     expect(data.error).toBe('Internal server error');
+
+    consoleSpy.mockRestore();
   });
 });
