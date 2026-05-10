@@ -1,4 +1,21 @@
-import connectDB from '../../lib/db';
+import { connectDB } from '../../lib/db';
+import sequelize from '../../lib/db';
+
+jest.mock('../../lib/db', () => ({
+  __esModule: true,
+  connectDB: jest.requireActual('../../lib/db').connectDB,
+  ensureDbConfig: jest.fn().mockResolvedValue(true),
+  default: {
+    authenticate: jest.fn().mockResolvedValue(),
+  },
+}));
+
+jest.mock('sequelize', () => {
+  const mSequelize = {
+    authenticate: jest.fn().mockResolvedValue(),
+  };
+  return { Sequelize: jest.fn(() => mSequelize) };
+});
 
 describe('connectDB', () => {
   let consoleSpy;
@@ -6,6 +23,7 @@ describe('connectDB', () => {
   beforeEach(() => {
     // Spy on console.log
     consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
@@ -13,13 +31,13 @@ describe('connectDB', () => {
     consoleSpy.mockRestore();
   });
 
-  it('should return true', async () => {
+  it('should return undefined upon successful database authentication', async () => {
     const result = await connectDB();
-    expect(result).toBe(true);
+    expect(result).toBeUndefined();
   });
 
   it('should log connection message', async () => {
     await connectDB();
-    expect(consoleSpy).toHaveBeenCalledWith('Database connected (placeholder)');
+    expect(consoleSpy).toHaveBeenCalledWith('Database connected successfully.');
   });
 });
