@@ -1,25 +1,50 @@
-import connectDB from '../../lib/db';
+import { connectDB, ensureDbConfig } from '../../lib/db';
+import { Sequelize } from 'sequelize';
 
-describe('connectDB', () => {
+jest.mock('sequelize', () => {
+  const mSequelize = {
+    authenticate: jest.fn().mockResolvedValue(),
+  };
+  return {
+    Sequelize: jest.fn(() => mSequelize),
+  };
+});
+
+describe('db.js', () => {
   let consoleSpy;
+  let errorSpy;
 
   beforeEach(() => {
-    // Spy on console.log
+    jest.clearAllMocks();
     consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+    errorSpy = jest.spyOn(console, 'error').mockImplementation();
   });
 
   afterEach(() => {
-    // Restore console.log
     consoleSpy.mockRestore();
+    errorSpy.mockRestore();
   });
 
-  it('should return true', async () => {
-    const result = await connectDB();
-    expect(result).toBe(true);
+  describe('connectDB', () => {
+    it('should log success message on successful authentication', async () => {
+      await connectDB();
+      expect(consoleSpy).toHaveBeenCalledWith('Database connected successfully.');
+    });
+
+    it('should log error message on failed authentication', async () => {
+      const error = new Error('Connection failed');
+      const sequelizeInstance = new Sequelize();
+      sequelizeInstance.authenticate.mockRejectedValueOnce(error);
+
+      await connectDB();
+      expect(errorSpy).toHaveBeenCalledWith('Unable to connect to the database:', error);
+    });
   });
 
-  it('should log connection message', async () => {
-    await connectDB();
-    expect(consoleSpy).toHaveBeenCalledWith('Database connected (placeholder)');
+  describe('ensureDbConfig', () => {
+    it('should return true', async () => {
+      const result = await ensureDbConfig();
+      expect(result).toBe(true);
+    });
   });
 });
