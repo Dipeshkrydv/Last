@@ -6,6 +6,9 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   poweredByHeader: false,
   optimizeFonts: true,
+  experimental: {
+    serverComponentsExternalPackages: ['sequelize'],
+  },
   images: {
     unoptimized: false,
     formats: ['image/avif', 'image/webp'],
