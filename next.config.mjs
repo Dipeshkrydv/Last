@@ -43,6 +43,9 @@ const nextConfig = {
   rewrites: async () => {
     return [];
   },
+  experimental: {
+    serverComponentsExternalPackages: ['sequelize'],
+  },
 };
 
 export default nextConfig;

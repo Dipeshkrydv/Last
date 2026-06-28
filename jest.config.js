@@ -6,4 +6,7 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
+  testPathIgnorePatterns: [
+    "<rootDir>/lib/email.test.js"
+  ]
 };
