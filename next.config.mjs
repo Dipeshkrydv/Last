@@ -3,6 +3,9 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   compress: true,
+  experimental: {
+    serverComponentsExternalPackages: ['sequelize'],
+  },
   productionBrowserSourceMaps: false,
   poweredByHeader: false,
   optimizeFonts: true,
